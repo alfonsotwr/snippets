@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Requiere librerías: requests, pdfminer, pandas; Módulo: descargabib.py
+"""Requiere las bibliotecas Python: requests, pdfminer, pandas; Módulo: descargabib.py
 
 Informes de:
 
