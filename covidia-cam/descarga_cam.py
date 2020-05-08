@@ -69,7 +69,8 @@ def descargacam(excel=False):
 
         text = pdf_to_text(fn)
 
-        # A partir debe de ser cambiado si se quiere
+        # A partir de aquí debe de ser cambiado si cambia el formato de los
+        # informes de la Consejería
         numbers = [int(m.group().strip().replace('.', ''))
                    for m in expnumber.finditer(text)]
 
