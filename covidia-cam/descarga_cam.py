@@ -122,7 +122,7 @@ def descargacam(excel=False):
         df.loc[date, 'muertos_otros'] = numbers[19]
         df.loc[date, 'muertos'] = numbers[20]
 
-    df = df.T
+    df = df.T.astype(int)
 
     if excel:
         print('Escribiendo', excelfn)
