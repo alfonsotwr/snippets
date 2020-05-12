@@ -30,7 +30,7 @@ FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
 
 
 def descargacam(excel=False):
-    # excel=True si se quiere el formato en .xlsx en vez de .csv
+    # excel=True si se quiere también un fichero formato en .xlsx además de .csv
 
     today = dt.date.today()
 
@@ -128,9 +128,11 @@ def descargacam(excel=False):
         print('Escribiendo', excelfn)
         with pd.ExcelWriter(excelfn) as writer:
             df.to_excel(writer)
-    else:
-        print('Escribiendo', csvfn)
-        df.to_csv(csvfn)
+
+    df2 = df.T
+    df2.index.name = 'Fecha'
+    print('Escribiendo', csvfn)
+    df2.to_csv(csvfn)
 
     print()
     print('ESTÁ ACTUALIZADO' if today == df.columns[-1].date() else
