@@ -23,7 +23,7 @@ from io import StringIO
 import re
 import pandas as pd
 
-expnumber = re.compile(r'^ *\d+(?:\.\d+)*(?:$|\s)', re.M)
+expnumber = re.compile(r'^ *\d+(?: ?\. ?\d+)*(?:$|\s)', re.M)
 
 URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:02d}{:02d}_cam_covid19.pdf'
 FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
@@ -71,7 +71,7 @@ def descargacam(excel=False):
 
         # A partir de aquí debe de ser cambiado si cambia el formato de los
         # informes de la Consejería
-        numbers = [int(m.group().strip().replace('.', ''))
+        numbers = [int(m.group().strip().replace('.', '').replace(' ', ''))
                    for m in expnumber.finditer(text)]
 
         # print(len(numbers))
