@@ -84,7 +84,6 @@ def descargacam(excel=False):
                 hospitalizados_sin_uci_dia = numbers[6]
                 uci_dia = numbers[7]
                 casos = numbers[5]
-                hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
                 domicilio_dia = numbers[8]
                 altas_dia = numbers[9]
                 fallecidos_dia = numbers[10]
@@ -92,10 +91,10 @@ def descargacam(excel=False):
                 hospitalizados_sin_uci_dia = numbers[3]
                 uci_dia = numbers[4]
                 casos = numbers[10]
-                hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
                 domicilio_dia = numbers[5]
                 altas_dia = numbers[6]
                 fallecidos_dia = numbers[7]
+
             muertos_hospitales = numbers[16]
             muertos_domicilios = numbers[17]
             muertos_centros = numbers[18]
@@ -118,7 +117,6 @@ def descargacam(excel=False):
 
             uci_dia = numbers[7]
             uci = numbers[8]
-            hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
 
             fallecidos_dia = numbers[9]
             fallecidos = numbers[10]
@@ -134,6 +132,8 @@ def descargacam(excel=False):
 
             altas_dia = numbers[18]
             recuperados = numbers[19]
+
+        hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
 
         df.loc[date, 'CASOS'] = casos
         df.loc[date, 'Hospitalizados'] = hospitalizados
