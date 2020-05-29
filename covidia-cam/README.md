@@ -7,3 +7,5 @@ En la columna de `hospitalizados_dia` sumo los Hospitalizados ingresados en el d
 Los informes PDF de la Consejería de Salud de la Comunidad de Madrid están disponibles en:
 
 https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-epidemiologica-actual
+
+![Covidia en la Comunidad de Madrid](mad.png)
