@@ -7,9 +7,12 @@ Informes de:
 https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-epidemiologica-actual
 """
 
+import os.path as pth
+
+if pth.isfile('../descargabib.py'):
+    import sys; sys.path.insert(1, '..')
 
 from descargabib import descarga
-import os.path as pth
 import datetime as dt
 import time
 from glob import glob
@@ -36,9 +39,9 @@ def descargacam(excel=False):
 
     current = dt.date(2020, 4, 22)
 
-    pdfdir = 'data/cam/'
+    pdfdir = '../data/cam/'
     if pth.isdir(pdfdir):
-        datadir = 'data/'
+        datadir = '../data/'
     else:
         pdfdir = ''
         datadir = ''
@@ -83,12 +86,14 @@ def descargacam(excel=False):
             if numbers[3] > 55000:
                 hospitalizados_sin_uci_dia = numbers[6]
                 uci_dia = numbers[7]
+                pcr = numbers[3]
                 casos = numbers[5]
                 domicilio_dia = numbers[8]
                 altas_dia = numbers[9]
                 fallecidos_dia = numbers[10]
             else:
                 hospitalizados_sin_uci_dia = numbers[3]
+                pcr = numbers[8]
                 uci_dia = numbers[4]
                 casos = numbers[10]
                 domicilio_dia = numbers[5]
@@ -101,41 +106,62 @@ def descargacam(excel=False):
             muertos_otros = numbers[19]
             muertos = numbers[20]
         else:
+            # print(text)
             # print(len(numbers))
             # print(numbers)
-            # print(text)
 
-            if len(numbers) != 20:
+            if len(numbers) not in [18, 20]:
                 raise RuntimeError('Formato no contemplado')
 
             pcr = numbers[2]
-            antic = numbers[6]
-            casos = pcr + antic
+            # antic = numbers[6]
+            # casos = pcr + antic
 
             hospitalizados_sin_uci_dia = numbers[3]
             hospitalizados = numbers[4]
 
-            uci_dia = numbers[7]
-            uci = numbers[8]
+            if len(numbers) == 20:
+                uci_dia = numbers[7]
+                uci = numbers[8]
 
-            fallecidos_dia = numbers[9]
-            fallecidos = numbers[10]
+                fallecidos_dia = numbers[9]
+                fallecidos = numbers[10]
 
-            domicilio_dia = numbers[11]
-            domicilio = numbers[12]
+                domicilio_dia = numbers[11]
+                domicilio = numbers[12]
 
-            muertos_centros = numbers[13]
-            muertos_hospitales = numbers[14]
-            muertos_domicilios = numbers[15]
-            muertos_otros = numbers[16]
-            muertos = numbers[17]
+                muertos_centros = numbers[13]
+                muertos_hospitales = numbers[14]
+                muertos_domicilios = numbers[15]
+                muertos_otros = numbers[16]
+                muertos = numbers[17]
 
-            altas_dia = numbers[18]
-            recuperados = numbers[19]
+                altas_dia = numbers[18]
+                recuperados = numbers[19]
+            elif len(numbers) == 18:
+                uci_dia = numbers[5]
+                uci = numbers[6]
+
+                fallecidos_dia = numbers[7]
+                fallecidos = numbers[8]
+
+                domicilio_dia = numbers[14]
+                domicilio = numbers[15]
+
+                muertos_centros = numbers[9]
+                muertos_hospitales = numbers[10]
+                muertos_domicilios = numbers[11]
+                muertos_otros = numbers[12]
+                muertos = numbers[13]
+
+                altas_dia = numbers[16]
+                recuperados = numbers[17]
+            else:
+                raise RuntimeError('Caso no contemplado')
 
         hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
 
-        df.loc[date, 'CASOS'] = casos
+        df.loc[date, 'CASOS_PCR'] = pcr
         df.loc[date, 'Hospitalizados'] = hospitalizados
         df.loc[date, 'UCI'] = uci
         df.loc[date, 'Fallecidos'] = fallecidos
