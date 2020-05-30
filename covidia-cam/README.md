@@ -8,4 +8,15 @@ Los informes PDF de la Consejería de Salud de la Comunidad de Madrid están dis
 
 https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-epidemiologica-actual
 
-![Covidia en la Comunidad de Madrid](mad.png)
+El fichero `madrid-historico.csv` contiene las series con datos que complementan o incluso sustituyen los datos que proporciona la Consejería de Salud en `madrid-series.csv`.
+
+Así las columnas de `Recuperados`, `uci_dia` y `hospitalizados_dia` del fichero `madrid-historico.csv` fueron proporcionados por el Instituto de Salud Carlos III (ISCIII) en las series publicadas el 26 de abril de 2020.
+
+Las columnas `CASOS_PCR`, `Hospitalizados`, `UCI` y `Fallecidos` del fichero `madrid-historico.csv` corresponden a las series actualizas por el Instituto de Salud Carlos III (ISCIII) en las series publicadas el 21 de mayo de 2020.
+
+Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid-series.csv`.
+
+
+![Covidia en la Comunidad de Madrid](madrid_covidia.png)
+
+![Fallecidos de covidia en la Comunidad de Madrid](madrid_fallecidos.png)
