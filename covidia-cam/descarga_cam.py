@@ -9,9 +9,6 @@ https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-ep
 
 import os.path as pth
 
-if pth.isfile('../descargabib.py'):
-    import sys; sys.path.insert(1, '..')
-
 from descargabib import descarga
 import datetime as dt
 import time
@@ -32,16 +29,14 @@ URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:
 FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
 
 
-def descargacam(excel=False):
-    # excel=True si se quiere también un fichero formato en .xlsx además de .csv
-
+def descargacam():
     today = dt.date.today()
 
     current = dt.date(2020, 4, 22)
 
-    pdfdir = '../data/cam/'
+    pdfdir = 'data/cam/'
     if pth.isdir(pdfdir):
-        datadir = '../data/'
+        datadir = 'data/'
     else:
         pdfdir = ''
         datadir = ''
@@ -56,7 +51,6 @@ def descargacam(excel=False):
 
         current += dt.timedelta(1)
 
-    excelfn = datadir + 'madrid-series.xlsx'
     csvfn = datadir + 'madrid-series.csv'
     df = pd.DataFrame()
 
@@ -180,11 +174,6 @@ def descargacam(excel=False):
 
 
     df = df.T.astype(int)
-
-    if excel:
-        print('Escribiendo', excelfn)
-        with pd.ExcelWriter(excelfn) as writer:
-            df.to_excel(writer)
 
     df2 = df.T
     df2.index.name = 'Fecha'
