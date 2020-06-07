@@ -12,14 +12,14 @@ El fichero contiene las siguientes columnas:
 
 `ccaa`: código [ISO 3166-2:ES](https://es.wikipedia.org/wiki/ISO_3166-2:ES) de la comunidad autónoma.
 
-`hospitalizados`: Casos que han precisado hospitalización (Total)
+`hospitalizados`: casos que han precisado hospitalización (total).
 
-`hospitalizados7`: Casos que han precisado hospitalización (Con fecha de ingreso en los últimos 7 días)
+`hospitalizados7`: casos que han precisado hospitalización (con fecha de ingreso en los últimos 7 días).
 
-`uci`: Casos que han ingresado en UCI (Total)
+`uci`: casos que han ingresado en UCI (total).
 
-`uci7`: Casos que han ingresado en UCI (Con fecha de ingreso en los últimos 7 días)
+`uci7`: casos que han ingresado en UCI (con fecha de ingreso en los últimos 7 días).
 
-`fallecidos`: Fallecidos (Total)
+`fallecidos`: fallecidos (total).
 
-`fallecidos7`: Fallecidos (Con fecha de defunción en los últimos 7 días)
+`fallecidos7`: fallecidos (con fecha de defunción en los últimos 7 días).
