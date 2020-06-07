@@ -1,4 +1,4 @@
-Contiene el fichero `informes_ministerio_sanidad.csv` (separador tabulador, codificado en UTF-16 con BOM para abrirse directamente con Microsoft Excel) con datos de las [actualizaciones](https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov-China/situacionActual.htm) que publica el Ministerio de Sanidad.
+Contiene el fichero `informes_ministerio_sanidad.csv` con datos de las [actualizaciones](https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov-China/situacionActual.htm) que publica el Ministerio de Sanidad.
 
 En el `informes_ministerio_sanidad.csv` están incluidos los datos de la Tabla 2 desde el 25 de mayo y no aseguro su actualización.
 
