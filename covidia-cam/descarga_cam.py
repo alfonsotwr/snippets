@@ -25,6 +25,11 @@ import pandas as pd
 
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)
 
+expacum = re.compile(r'Acumulado([\d\s]+)')
+expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
+expnumber2 = re.compile(r'\d\d\d\d\d+')
+
+
 URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:02d}{:02d}_cam_covid19.pdf'
 FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
 
@@ -54,7 +59,24 @@ def descargacam():
     csvfn = datadir + 'madrid-series.csv'
     df = pd.DataFrame()
 
+
     for fn in sorted(glob(pdfdir + '20*_cam_covid19.pdf')):
+        fn1 = fn.replace('.pdf', '_1.txt')
+        fn2 = fn.replace('.pdf', '_2.txt')
+        if not pth.isfile(fn1):
+            print('Creating:', fn1)
+            page1 = pdf_to_text(fn, pagenum=0)
+            with open(fn1, 'w', encoding='utf-8') as fp:
+                fp.write(page1)
+        if not pth.isfile(fn2):
+            print('Creating:', fn2)
+            page2 = pdf_to_text(fn, pagenum=1)
+            with open(fn2, 'w', encoding='utf-8') as fp:
+                fp.write(page2)
+
+
+    for fn in sorted(glob(pdfdir + '20*_cam_covid19_1.txt')):
+        print(fn)
         base = pth.basename(fn)
         year = 2000 + int(base[:2])
         month = int(base[2:4])
@@ -62,9 +84,8 @@ def descargacam():
 
         date = dt.datetime(year, month, day)
 
-        print(fn)
-
-        text = pdf_to_text(fn, pagenum=0)
+        with open(fn, encoding='utf-8') as fp:
+            text = fp.read()
 
         # A partir de aquí debe de ser cambiado si cambia el formato de los
         # informes de la Consejería
@@ -180,10 +201,41 @@ def descargacam():
     print('Escribiendo', csvfn)
     df2.to_csv(csvfn)
 
-    print()
+
+    fn = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
+    print(fn)
+    with open(fn, encoding='utf-8') as fp:
+        text = fp.read()
+
+    for m in expacum.finditer(text):
+        group1 = m.group(1)
+        if group1.strip():
+            break
+    numbers = [int(x) for x in group1.split()]
+
+    for m2 in expnumber2.finditer(text, pos=m.end()):
+        numbers.append(int(m2.group()))
+
+    dates = []
+    for m in expfecha.finditer(text):
+        dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
+                                 int(m.group(1))))
+
+
+    sr = pd.Series(numbers, index=dates)
+    sr.name = 'PCR+'
+    sr.index.name = 'Fecha'
+    df2 = sr.to_frame()
+
+    csvfn = datadir + 'madrid-pcr.csv'
+    print('Escribiendo', csvfn)
+    df2.to_csv(csvfn)
+
+
     print('ESTÁ ACTUALIZADO' if today == df.columns[-1].date() else
           '******************* NO ESTÁ ACTUALIZADO')
-    print()
+
+
 
 
 # Extract PDF text using PDFMiner. Adapted from
