@@ -225,11 +225,14 @@ def descargacam():
     sr = pd.Series(numbers, index=dates)
     sr.name = 'PCR+'
     sr.index.name = 'Fecha'
-    df2 = sr.to_frame()
+    df3 = sr.to_frame()
+
+    if df2.index[-1] != df3.index[-1] + dt.timedelta(1):
+        raise RuntimeError('Última fecha de las tablas no coincide')
 
     csvfn = datadir + 'madrid-pcr.csv'
     print('Escribiendo', csvfn)
-    df2.to_csv(csvfn)
+    df3.to_csv(csvfn)
 
 
     print('ESTÁ ACTUALIZADO' if today == df.columns[-1].date() else
