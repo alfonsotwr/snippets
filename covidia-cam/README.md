@@ -12,7 +12,7 @@ https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-ep
 
 El fichero `madrid-historico.csv` contiene las series con datos que complementan o incluso sustituyen los datos que proporciona la Consejería de Salud en `madrid-series.csv`.
 
-En ambos ficheros, la fecha corresponde a la fecha de publicación del informe, es decir, son los datos del día anterior. Mientras, en las gráficas la fecha es la de los datos.
+La fecha corresponde a la fecha de publicación del informe, es decir, son los datos del día anterior.
 
 Así las columnas de `Recuperados`, `uci_dia` y `hospitalizados_dia` del fichero `madrid-historico.csv` fueron extraídas de las series publicadas el Instituto de Salud Carlos III (ISCIII) el 26 de abril de 2020.
 
@@ -24,7 +24,6 @@ Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid
 **Fichero `madrid-pcr.csv`**
 
 Contiene la serie consolidada de positivos PCR que publica en cada informe la Consejería de Salud de la Comunidad de Madrid. La columna `Fecha` es la fecha del informe y `PCR+` los positivos PCR acumulados.
-
 
 
 ![Covidia en la Comunidad de Madrid](madrid_covidia.png)
