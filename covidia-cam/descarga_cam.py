@@ -202,37 +202,40 @@ def descargacam():
     df2.to_csv(csvfn)
 
 
-    fn = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
-    print(fn)
-    with open(fn, encoding='utf-8') as fp:
-        text = fp.read()
+    # Con el nuevo cambio de formato complicaba demasiado la lectura
+    # así que queda comentada por ahora
 
-    for m in expacum.finditer(text):
-        group1 = m.group(1)
-        if group1.strip():
-            break
-    numbers = [int(x) for x in group1.split()]
+    # fn = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
+    # print(fn)
+    # with open(fn, encoding='utf-8') as fp:
+    #     text = fp.read()
 
-    for m2 in expnumber2.finditer(text, pos=m.end()):
-        numbers.append(int(m2.group()))
+    # for m in expacum.finditer(text):
+    #     group1 = m.group(1)
+    #     if group1.strip():
+    #         break
+    # numbers = [int(x) for x in group1.split()]
 
-    dates = []
-    for m in expfecha.finditer(text):
-        dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
-                                 int(m.group(1))))
+    # for m2 in expnumber2.finditer(text, pos=m.end()):
+    #     numbers.append(int(m2.group()))
+
+    # dates = []
+    # for m in expfecha.finditer(text):
+    #     dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
+    #                              int(m.group(1))))
 
 
-    sr = pd.Series(numbers, index=dates)
-    sr.name = 'PCR+'
-    sr.index.name = 'Fecha'
-    df3 = sr.to_frame()
+    # sr = pd.Series(numbers, index=dates)
+    # sr.name = 'PCR+'
+    # sr.index.name = 'Fecha'
+    # df3 = sr.to_frame()
 
-    if df2.index[-1] != df3.index[-1] + dt.timedelta(1):
-        raise RuntimeError('Última fecha de las tablas no coincide')
+    # if df2.index[-1] != df3.index[-1] + dt.timedelta(1):
+    #     raise RuntimeError('Última fecha de las tablas no coincide')
 
-    csvfn = datadir + 'madrid-pcr.csv'
-    print('Escribiendo', csvfn)
-    df3.to_csv(csvfn)
+    # csvfn = datadir + 'madrid-pcr.csv'
+    # print('Escribiendo', csvfn)
+    # df3.to_csv(csvfn)
 
 
     print('ESTÁ ACTUALIZADO' if today == df.columns[-1].date() else
