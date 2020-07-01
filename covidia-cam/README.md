@@ -20,12 +20,6 @@ Las columnas `CASOS_PCR`, `Hospitalizados`, `UCI` y `Fallecidos` del fichero `ma
 
 Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid-series.csv`.
 
-
-**Fichero `madrid-pcr.csv`**
-
-Contiene la serie consolidada de positivos PCR que publica en cada informe la Consejería de Salud de la Comunidad de Madrid. La columna `Fecha` es la fecha del informe y `PCR+` los positivos PCR acumulados.
-
-
 ![Covidia en la Comunidad de Madrid](madrid_covidia.png)
 
 ![Fallecidos de covidia en la Comunidad de Madrid](madrid_fallecidos.png)
