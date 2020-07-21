@@ -1,4 +1,4 @@
-El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Salud de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear el ficheros `madrid-series.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio.
+El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Salud de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear los ficheros `madrid-series.csv` y `madrid-pcr.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio.
 
 Requiere las bibliotecas Python: requests, pdfminer y pandas
 
@@ -19,6 +19,12 @@ Así las columnas de `Recuperados`, `uci_dia` y `hospitalizados_dia` del fichero
 Las columnas `CASOS_PCR`, `Hospitalizados`, `UCI` y `Fallecidos` del fichero `madrid-historico.csv` corresponden a las series actualizadas por el Instituto de Salud Carlos III (ISCIII) en las series publicadas el 21 de mayo de 2020.
 
 Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid-series.csv`.
+
+
+**Fichero `madrid-pcr.csv`**
+
+Contiene la serie consolidada de positivos PCR que publica en cada informe la Consejería de Salud de la Comunidad de Madrid. La columna `Fecha` es la fecha del informe y `PCR+` los positivos PCR acumulados.
+
 
 ![Covidia en la Comunidad de Madrid](madrid_covidia.png)
 
