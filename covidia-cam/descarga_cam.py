@@ -25,8 +25,8 @@ import pandas as pd
 
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)
 
-expacum = re.compile(r'Acumulado([\d\s]+)')
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
+expacum = re.compile(r'\n2 \n6 \n10 \n[\d \n]+')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
 
 
@@ -66,6 +66,7 @@ def descargacam():
     for fn in sorted(glob(pdfdir + '20*_cam_covid19.pdf')):
         fn1 = fn.replace('.pdf', '_1.txt')
         fn2 = fn.replace('.pdf', '_2.txt')
+        fn3 = fn.replace('.pdf', '_3.txt')
         if not pth.isfile(fn1):
             print('Creating:', fn1)
             page1 = pdf_to_text(fn, pagenum=0)
@@ -76,6 +77,11 @@ def descargacam():
             page2 = pdf_to_text(fn, pagenum=1)
             with open(fn2, 'w', encoding='utf-8') as fp:
                 fp.write(page2)
+        if not pth.isfile(fn3):
+            print('Creating:', fn3)
+            page3 = pdf_to_text(fn, pagenum=2)
+            with open(fn3, 'w', encoding='utf-8') as fp:
+                fp.write(page3)
 
 
     for fn in sorted(glob(pdfdir + '20*_cam_covid19_1.txt')):
@@ -205,40 +211,57 @@ def descargacam():
     df2.to_csv(csvfn)
 
 
-    # Con el nuevo cambio de formato complicaba demasiado la lectura
-    # así que queda comentada por ahora
+    fn2 = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
+    fn3 = fn2.replace('_2.txt', '_3.txt')
+    print(fn2)
+    with open(fn2, encoding='utf-8') as fp:
+        text = fp.read()
 
-    # fn = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
-    # print(fn)
-    # with open(fn, encoding='utf-8') as fp:
-    #     text = fp.read()
+    m = expacum.search(text)
 
-    # for m in expacum.finditer(text):
-    #     group1 = m.group(1)
-    #     if group1.strip():
-    #         break
-    # numbers = [int(x) for x in group1.split()]
+    assert m, 'Debe ajustarse expacum con los primeros valores'
 
-    # for m2 in expnumber2.finditer(text, pos=m.end()):
-    #     numbers.append(int(m2.group()))
+    accum = [int(x) for x in m.group().split()]
 
-    # dates = []
-    # for m in expfecha.finditer(text):
-    #     dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
-    #                              int(m.group(1))))
+    dates = []
+    for m in expfecha.finditer(text):
+        dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
+                                 int(m.group(1))))
+
+    accum2 = [int(x.group()) for x in expnumber2.finditer(text)
+              if int(x.group()) > accum[-1]]
+    accum += accum2
+
+    assert len(accum) == len(dates), 'La serie acumulada no concuerda para _2'
 
 
-    # sr = pd.Series(numbers, index=dates)
-    # sr.name = 'PCR+'
-    # sr.index.name = 'Fecha'
-    # df3 = sr.to_frame()
+    print(fn3)
+    with open(fn3, encoding='utf-8') as fp:
+        text = fp.read()
 
-    # if df2.index[-1] != df3.index[-1] + dt.timedelta(1):
-    #     raise RuntimeError('Última fecha de las tablas no coincide')
+    for m in expfecha.finditer(text):
+        dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
+                                 int(m.group(1))))
 
-    # csvfn = datadir + 'madrid-pcr.csv'
-    # print('Escribiendo', csvfn)
-    # df3.to_csv(csvfn)
+    accum2 = [int(x.group()) for x in expnumber2.finditer(text)]
+    accum += accum2
+
+    assert len(accum) == len(dates), 'La serie acumulada no concuerda para _3'
+
+    sr = pd.Series(accum, index=dates)
+    sr.name = 'PCR+'
+    sr.index.name = 'Fecha'
+    df3 = sr.to_frame()
+
+    if df2.index[-1] != df3.index[-1] + dt.timedelta(1):
+        raise RuntimeError('Última fecha de las tablas no coincide')
+
+    assert all(sr.diff().dropna() >= 0), 'La serie acumulada no es creciente'
+    assert all((sr.index[1:] - sr.index[:-1]).days > 0), 'Fechas no suben'
+
+    csvfn = datadir + 'madrid-pcr.csv'
+    print('Escribiendo', csvfn)
+    df3.to_csv(csvfn)
 
 
     print('ESTÁ ACTUALIZADO' if today == df.columns[-1].date() else
