@@ -8,20 +8,19 @@ https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-ep
 """
 
 import os.path as pth
-
-from descargabib import descarga
 import datetime as dt
 import time
 from glob import glob
+import re
+import pandas as pd
 
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter #process_pdf
 from pdfminer.pdfpage import PDFPage
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
-
 from io import StringIO
-import re
-import pandas as pd
+
+from descargabib import descarga
 
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)
 
@@ -62,7 +61,6 @@ def descargacam():
     csvfn = datadir + 'madrid-series.csv'
     df = pd.DataFrame()
 
-
     for fn in sorted(glob(pdfdir + '20*_cam_covid19.pdf')):
         fn1 = fn.replace('.pdf', '_1.txt')
         fn2 = fn.replace('.pdf', '_2.txt')
@@ -82,7 +80,6 @@ def descargacam():
             page3 = pdf_to_text(fn, pagenum=2)
             with open(fn3, 'w', encoding='utf-8') as fp:
                 fp.write(page3)
-
 
     for fn in sorted(glob(pdfdir + '20*_cam_covid19_1.txt')):
         print(fn)
@@ -202,14 +199,10 @@ def descargacam():
         df.loc[date, 'muertos_otros'] = muertos_otros
         df.loc[date, 'muertos'] = muertos
 
-
-    df = df.T.astype(int)
-
-    df2 = df.T
-    df2.index.name = 'Fecha'
+    df = df.astype(int)
+    df.index.name = 'Fecha'
     print('Escribiendo', csvfn)
-    df2.to_csv(csvfn)
-
+    df.to_csv(csvfn)
 
     fn2 = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
     fn3 = fn2.replace('_2.txt', '_3.txt')
@@ -251,9 +244,9 @@ def descargacam():
     sr = pd.Series(accum, index=dates)
     sr.name = 'PCR+'
     sr.index.name = 'Fecha'
-    df3 = sr.to_frame()
+    df2 = sr.to_frame()
 
-    if df2.index[-1] != df3.index[-1] + dt.timedelta(1):
+    if df.index[-1] != df2.index[-1] + dt.timedelta(1):
         raise RuntimeError('Última fecha de las tablas no coincide')
 
     assert all(sr.diff().dropna() >= 0), 'La serie acumulada no es creciente'
@@ -261,13 +254,10 @@ def descargacam():
 
     csvfn = datadir + 'madrid-pcr.csv'
     print('Escribiendo', csvfn)
-    df3.to_csv(csvfn)
+    df2.to_csv(csvfn)
 
-
-    print('ESTÁ ACTUALIZADO' if today == df.columns[-1].date() else
+    print('ESTÁ ACTUALIZADO' if today == df.index[-1].date() else
           '******************* NO ESTÁ ACTUALIZADO')
-
-
 
 
 # Extract PDF text using PDFMiner. Adapted from
