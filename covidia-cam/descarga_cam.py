@@ -53,8 +53,16 @@ def descargacam():
         url = URL_TPL.format(current.year % 100, current.month, current.day)
 
         if not pth.exists(fn):
-            descarga(url, fn, isbinary=True)
+            ret = descarga(url, fn, isbinary=True)
             time.sleep(1)
+            if not ret:
+                changed = False
+                if current == dt.date(2020, 8, 3):  # special cases
+                    url = url.replace('03_', '03')
+                    changed = True
+                if changed:
+                    descarga(url, fn, isbinary=True)
+                    time.sleep(1)
 
         current += dt.timedelta(1)
 
