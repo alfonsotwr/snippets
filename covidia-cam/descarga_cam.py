@@ -60,6 +60,9 @@ def descargacam():
                 if current == dt.date(2020, 8, 3):  # special cases
                     url = url.replace('03_', '03')
                     changed = True
+                elif current == dt.date(2020, 8, 14):  # special cases
+                    url = url.replace('/20', '/2020')
+                    changed = True
                 if changed:
                     descarga(url, fn, isbinary=True)
                     time.sleep(1)
