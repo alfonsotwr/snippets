@@ -24,8 +24,3 @@ Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid
 **Fichero `madrid-pcr.csv`**
 
 Contiene la serie consolidada de positivos PCR que publica en cada informe la Consejería de Salud de la Comunidad de Madrid. La columna `Fecha` es la fecha de detección y `PCR+` los positivos PCR acumulados para esa fecha.
-
-
-![Covidia en la Comunidad de Madrid](madrid_covidia.png)
-
-![Fallecidos de covidia en la Comunidad de Madrid](madrid_fallecidos.png)
