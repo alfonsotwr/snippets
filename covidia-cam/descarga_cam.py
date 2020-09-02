@@ -63,6 +63,9 @@ def descargacam():
                 elif current == dt.date(2020, 8, 14):  # special cases
                     url = url.replace('/20', '/2020')
                     changed = True
+                elif current == dt.date(2020, 9, 2):  # special cases
+                    url = url.replace('/doc/sanidad', '')
+                    changed = True
                 if changed:
                     descarga(url, fn, isbinary=True)
                     time.sleep(1)
@@ -252,7 +255,7 @@ def descargacam():
 
     assert len(accum) == len(dates), 'La serie acumulada no concuerda para _3'
 
-    sr = pd.Series(accum, index=dates)
+    sr = pd.Series(accum, index=dates).sort_index()
     sr.name = 'PCR+'
     sr.index.name = 'Fecha'
     df2 = sr.to_frame()
