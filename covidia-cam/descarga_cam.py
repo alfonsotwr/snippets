@@ -241,7 +241,6 @@ def descargacam():
 
     assert len(accum) == len(dates), 'La serie acumulada no concuerda para _2'
 
-
     print(fn3)
     with open(fn3, encoding='utf-8') as fp:
         text = fp.read()
