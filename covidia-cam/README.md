@@ -1,6 +1,6 @@
 El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Salud de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear los ficheros `madrid-series.csv` y `madrid-pcr.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio.
 
-Requiere las bibliotecas Python: requests, pdfminer y pandas
+Requiere las bibliotecas Python: requests, pdfminer.six y pandas
 
 **Fichero `madrid-series.csv`**
 
