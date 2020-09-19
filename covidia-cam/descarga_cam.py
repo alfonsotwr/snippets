@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Requiere las bibliotecas Python: requests, pdfminer, pandas; Módulo: descargabib.py
+"""Requiere las bibliotecas Python: requests, pdfminer.six, pandas; Módulo: descargabib.py
 
 Informes de:
 
@@ -104,6 +104,9 @@ def descargacam():
 
         date = dt.datetime(year, month, day)
 
+        # if date > dt.datetime(2020, 7, 13):
+        #     break
+
         with open(fn, encoding='utf-8') as fp:
             text = fp.read()
 
@@ -142,38 +145,36 @@ def descargacam():
             muertos = numbers[20]
         else:
             # print(text)
-            # print(len(numbers))
-            # print(numbers)
+            # print([(ix, jx) for ix, jx  in enumerate(numbers)])
 
-            if len(numbers) not in [18, 20]:
-                raise RuntimeError('Formato no contemplado')
+            if date < dt.datetime(2020, 5, 20):
+                assert len(numbers) == 20, 'Formato no contemplado'
+                pcr = numbers[2]
+                hospitalizados_sin_uci_dia = numbers[5]
+                hospitalizados = numbers[6]
 
-            pcr = numbers[2]
-            # antic = numbers[6]
-            # casos = pcr + antic
-
-            hospitalizados_sin_uci_dia = numbers[3]
-            hospitalizados = numbers[4]
-
-            if len(numbers) == 20:
                 uci_dia = numbers[7]
                 uci = numbers[8]
 
-                fallecidos_dia = numbers[9]
-                fallecidos = numbers[10]
+                fallecidos_dia = numbers[16]
+                fallecidos = numbers[17]
 
-                domicilio_dia = numbers[11]
-                domicilio = numbers[12]
+                domicilio_dia = numbers[18]
+                domicilio = numbers[19]
 
-                muertos_centros = numbers[13]
-                muertos_hospitales = numbers[14]
-                muertos_domicilios = numbers[15]
-                muertos_otros = numbers[16]
-                muertos = numbers[17]
+                muertos_centros = numbers[9]
+                muertos_hospitales = numbers[10]
+                muertos_domicilios = numbers[11]
+                muertos_otros = numbers[12]
+                muertos = numbers[13]
 
-                altas_dia = numbers[18]
-                recuperados = numbers[19]
-            elif len(numbers) == 18:
+                altas_dia = numbers[14]
+                recuperados = numbers[15]
+            elif date < dt.datetime(2020, 7, 13):
+                assert len(numbers) == 18, 'Formato no contemplado'
+                pcr = numbers[2]
+                hospitalizados_sin_uci_dia = numbers[3]
+                hospitalizados = numbers[4]
                 uci_dia = numbers[5]
                 uci = numbers[6]
 
@@ -191,8 +192,29 @@ def descargacam():
 
                 altas_dia = numbers[16]
                 recuperados = numbers[17]
+
             else:
-                raise RuntimeError('Caso no contemplado')
+                assert len(numbers) == 18, 'Formato no contemplado'
+                pcr = numbers[2]
+                hospitalizados_sin_uci_dia = numbers[3]
+                hospitalizados = numbers[4]
+                uci_dia = numbers[5]
+                uci = numbers[6]
+
+                fallecidos_dia = numbers[14]
+                fallecidos = numbers[15]
+
+                domicilio_dia = numbers[16]
+                domicilio = numbers[17]
+
+                muertos_centros = numbers[7]
+                muertos_hospitales = numbers[8]
+                muertos_domicilios = numbers[9]
+                muertos_otros = numbers[10]
+                muertos = numbers[11]
+
+                altas_dia = numbers[12]
+                recuperados = numbers[13]
 
         hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
 
@@ -217,6 +239,9 @@ def descargacam():
     df.index.name = 'Fecha'
     print('Escribiendo', csvfn)
     df.to_csv(csvfn)
+
+
+    # return  # Para no crear serie PCR
 
     fn2 = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
     fn3 = fn2.replace('_2.txt', '_3.txt')
