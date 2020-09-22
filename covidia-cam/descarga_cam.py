@@ -14,7 +14,7 @@ from glob import glob
 import re
 import pandas as pd
 
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter #process_pdf
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -125,7 +125,7 @@ def descargacam():
                 hospitalizados_sin_uci_dia = numbers[6]
                 uci_dia = numbers[7]
                 pcr = numbers[3]
-                casos = numbers[5]
+                # casos = numbers[5]
                 domicilio_dia = numbers[8]
                 altas_dia = numbers[9]
                 fallecidos_dia = numbers[10]
@@ -133,7 +133,7 @@ def descargacam():
                 hospitalizados_sin_uci_dia = numbers[3]
                 pcr = numbers[8]
                 uci_dia = numbers[4]
-                casos = numbers[10]
+                # casos = numbers[10]
                 domicilio_dia = numbers[5]
                 altas_dia = numbers[6]
                 fallecidos_dia = numbers[7]
@@ -238,8 +238,7 @@ def descargacam():
     df = df.astype(int)
     df.index.name = 'Fecha'
     print('Escribiendo', csvfn)
-    df.to_csv(csvfn)
-
+    df.to_csv(csvfn, line_terminator='\r\n')
 
     # return  # Para no crear serie PCR
 
@@ -297,7 +296,7 @@ def descargacam():
 
     csvfn = datadir + 'madrid-pcr.csv'
     print('Escribiendo', csvfn)
-    df2.to_csv(csvfn)
+    df2.to_csv(csvfn, line_terminator='\r\n')
 
     print('ESTÁ ACTUALIZADO' if today == df.index[-1].date() else
           '******************* NO ESTÁ ACTUALIZADO')
