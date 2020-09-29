@@ -145,9 +145,18 @@ def descargacam():
             muertos = numbers[20]
         else:
             # print(text)
-            # print([(ix, jx) for ix, jx  in enumerate(numbers)])
+            # print([(ix, jx) for ix, jx in enumerate(numbers)])
 
-            if date < dt.datetime(2020, 5, 20):
+            if date >= dt.datetime(2020, 9, 29):
+                fmt = 1
+            elif date >= dt.datetime(2020, 7, 13):
+                fmt = 2
+            elif date >= dt.datetime(2020, 5, 20):
+                fmt = 1
+            else:
+                fmt = 0
+
+            if fmt == 0:
                 assert len(numbers) == 20, 'Formato no contemplado'
                 pcr = numbers[2]
                 hospitalizados_sin_uci_dia = numbers[5]
@@ -170,7 +179,7 @@ def descargacam():
 
                 altas_dia = numbers[14]
                 recuperados = numbers[15]
-            elif date < dt.datetime(2020, 7, 13):
+            elif fmt == 1:
                 assert len(numbers) == 18, 'Formato no contemplado'
                 pcr = numbers[2]
                 hospitalizados_sin_uci_dia = numbers[3]
@@ -192,8 +201,7 @@ def descargacam():
 
                 altas_dia = numbers[16]
                 recuperados = numbers[17]
-
-            else:
+            elif fmt == 2:
                 assert len(numbers) == 18, 'Formato no contemplado'
                 pcr = numbers[2]
                 hospitalizados_sin_uci_dia = numbers[3]
@@ -215,6 +223,8 @@ def descargacam():
 
                 altas_dia = numbers[12]
                 recuperados = numbers[13]
+            else:
+                assert False, 'fmt incorrecto'
 
         hospitalizados_dia = hospitalizados_sin_uci_dia + uci_dia
 
