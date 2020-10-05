@@ -147,12 +147,12 @@ def descargacam():
             # print(text)
             # print([(ix, jx) for ix, jx in enumerate(numbers)])
 
-            if date >= dt.datetime(2020, 9, 29):
-                fmt = 1
-            elif date >= dt.datetime(2020, 7, 13):
-                fmt = 2
-            elif date >= dt.datetime(2020, 5, 20):
-                fmt = 1
+            if date >= dt.datetime(2020, 5, 20):
+                assert len(numbers) == 18, 'Formato no contemplado'
+                if numbers[7] < 4500:
+                    fmt = 1
+                else:
+                    fmt = 2
             else:
                 fmt = 0
 
@@ -180,7 +180,6 @@ def descargacam():
                 altas_dia = numbers[14]
                 recuperados = numbers[15]
             elif fmt == 1:
-                assert len(numbers) == 18, 'Formato no contemplado'
                 pcr = numbers[2]
                 hospitalizados_sin_uci_dia = numbers[3]
                 hospitalizados = numbers[4]
@@ -202,7 +201,6 @@ def descargacam():
                 altas_dia = numbers[16]
                 recuperados = numbers[17]
             elif fmt == 2:
-                assert len(numbers) == 18, 'Formato no contemplado'
                 pcr = numbers[2]
                 hospitalizados_sin_uci_dia = numbers[3]
                 hospitalizados = numbers[4]
