@@ -1,8 +1,6 @@
 **covidia-cam** forma parte del proyecto [Escovid19data: Capturando colaborativamente datos de COVID-19 por provincias en España](https://github.com/montera34/escovid19data).
 
-El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Salud de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear los ficheros `madrid-series.csv` y `madrid-pcr.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio.
-
-Requiere las bibliotecas Python: requests, pdfminer.six y pandas
+El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Salud de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear los ficheros `madrid-series.csv` y `madrid-pcr.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio. Requiere además las bibliotecas Python: requests, pdfminer.six y pandas
 
 **Fichero `madrid-series.csv`**
 
@@ -12,7 +10,9 @@ Los informes PDF de la Consejería de Salud de la Comunidad de Madrid están dis
 
 https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-epidemiologica-actual
 
-El fichero `madrid-historico.csv` contiene las series con datos que complementan o incluso sustituyen los datos que proporciona la Consejería de Salud en `madrid-series.csv`.
+**Fichero `madrid-historico.csv`**
+
+Contiene las series con datos que complementan o incluso sustituyen los datos que proporciona la Consejería de Salud en `madrid-series.csv`.
 
 La fecha corresponde a la fecha de publicación del informe, es decir, son los datos del día anterior.
 
@@ -21,7 +21,6 @@ Así las columnas de `Recuperados`, `uci_dia` y `hospitalizados_dia` del fichero
 Las columnas `CASOS_PCR`, `Hospitalizados`, `UCI` y `Fallecidos` del fichero `madrid-historico.csv` corresponden a las series actualizadas por el Instituto de Salud Carlos III (ISCIII) en las series publicadas el 21 de mayo de 2020.
 
 Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid-series.csv`.
-
 
 **Fichero `madrid-pcr.csv`**
 
