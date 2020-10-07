@@ -267,8 +267,8 @@ def descargacam():
         dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
                                  int(m.group(1))))
 
-    accum2 = [int(x.group()) for x in expnumber2.finditer(text)
-              if int(x.group()) > accum[-1]]
+    accum2 = sorted(int(x.group()) for x in expnumber2.finditer(text)
+                    if int(x.group()) > accum[-1])
     accum += accum2
 
     assert len(accum) == len(dates), 'La serie acumulada no concuerda para _2'
