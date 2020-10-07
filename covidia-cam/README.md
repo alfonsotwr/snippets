@@ -25,3 +25,7 @@ Los datos del fichero `madrid-historico.csv` tienen preferencia a los de `madrid
 **Fichero `madrid-pcr.csv`**
 
 Contiene la serie consolidada de positivos PCR que publica en cada informe la Consejería de Salud de la Comunidad de Madrid. La columna `Fecha` es la fecha de detección y `PCR+` los positivos PCR acumulados para esa fecha.
+
+**NOTA**:
+
+Desde el informe del 6 de octubre de 2020, los informes han cambiado de "Positivos PCR" a "Casos positivos", que indicaría que van a incluir los positivos por tests de antígenos. Por no cambiar el formato de los ficheros, aunque la columna indique PCR, entiéndase que se refieren a los casos positivos que vienen en el informe. 
