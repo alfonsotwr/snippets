@@ -49,6 +49,10 @@ def descargacam():
         if current > dt.date(2020, 7, 1) and current.weekday() in [5, 6]:
             current += dt.timedelta(1)
             continue
+        if current in [dt.date(2020, 10, 12)]:
+            current += dt.timedelta(1)
+            continue
+
         fn = pdfdir + FN_TPL.format(current.year % 100, current.month, current.day)
         url = URL_TPL.format(current.year % 100, current.month, current.day)
 
