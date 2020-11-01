@@ -46,7 +46,8 @@ def descargacam():
         datadir = ''
 
     while current <= today:
-        if current > dt.date(2020, 7, 1) and current.weekday() in [5, 6]:
+        if (dt.date(2020, 7, 1) < current < dt.date(2020, 10, 28) and
+                current.weekday() in [5, 6]):
             current += dt.timedelta(1)
             continue
         if current in [dt.date(2020, 10, 12)]:
