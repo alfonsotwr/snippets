@@ -271,6 +271,7 @@ def descargacam():
     for m in expfecha.finditer(text):
         dates.append(dt.datetime(int(m.group(3)), int(m.group(2)),
                                  int(m.group(1))))
+    dates = sorted(dates)
 
     accum2 = sorted(int(x.group()) for x in expnumber2.finditer(text)
                     if int(x.group()) > accum[-1])
@@ -301,9 +302,9 @@ def descargacam():
     if df.index[-1] != df2.index[-1] + dt.timedelta(1):
         raise RuntimeError('Última fecha de las tablas no coincide')
 
-    # pd.set_option('display.max_rows', None)
-    # print(sr)
-    # print(sr.diff())
+    pd.set_option('display.max_rows', None)
+    print(sr)
+    print(sr.diff())
     assert all(sr.diff().dropna() >= 0), 'La serie acumulada no es creciente'
     assert all((sr.index[1:] - sr.index[:-1]).days > 0), 'Fechas no suben'
 
