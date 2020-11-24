@@ -1,6 +1,6 @@
 **covidia-cam** forma parte del proyecto [Escovid19data: Capturando colaborativamente datos de COVID-19 por provincias en España](https://github.com/montera34/escovid19data).
 
-El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Salud de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear los ficheros `madrid-series.csv` y `madrid-pcr.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio. Requiere además las bibliotecas Python: requests, pdfminer.six y pandas
+El *script* de Python `descarga_cam.py` es para **descargar** los informes diarios pdf de la Consejería de Sanidad de la Comunidad de Madrid datos sobre covidia de la Consejería de Salud de la Comunidad de Madrid y **procesarlos** para crear los ficheros `madrid-series.csv` y `madrid-pcr.csv`. `descarga_cam.py` necesita el módulo de Python `descargabib.py` que también está disponible en este directorio. Requiere además las bibliotecas Python: requests, pdfminer.six y pandas
 
 **Fichero `madrid-series.csv`**
 
