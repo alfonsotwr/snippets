@@ -25,7 +25,7 @@ from descargabib import descarga
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)
 
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
-expacum = re.compile(r'\n2 \n7 \n11 \n[\d \n]+')
+expacum = re.compile(r'\n2 \n7 \n12 \n[\d \n]+')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
 
 
