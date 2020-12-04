@@ -45,7 +45,7 @@ def descarga(url, fn, isbinary=False, isascii=False, isbackup=False,
             elif isascii:
                 text = r.content.decode('ascii', 'ignore')
                 with open(fn, 'w', encoding='utf-8') as fp:
-                    fp.write(text)
+                    fp.write(text.replace('\r\n', '\n'))
             else:
                 with open(fn, 'w', encoding='utf-8') as fp:
                     fp.write(r.text.replace('\r\n', '\n'))
