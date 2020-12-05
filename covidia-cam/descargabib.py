@@ -6,12 +6,12 @@ import requests
 from shutil import copyfile
 
 
-# ALWAYS_UPDATE = False
-ALWAYS_UPDATE = True
+# ALWAYS_UPDATE_DEFAULT = False
+ALWAYS_UPDATE_DEFAULT = True
 
 
 def descarga(url, fn, isbinary=False, isascii=False, isbackup=False,
-             prevpage=None, verify=True):
+             prevpage=None, verify=True, always=ALWAYS_UPDATE_DEFAULT):
     today = dt.date.today()
 
     ret = True
@@ -31,9 +31,9 @@ def descarga(url, fn, isbinary=False, isascii=False, isbackup=False,
             print('Backup: {} -> {}'.format(fn, backupfn))
             copyfile(fn, backupfn)
 
-    if not pth.isfile(fn) or changed != today or ALWAYS_UPDATE:
+    if not pth.isfile(fn) or changed != today or always:
         print('Descargando:', url)
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}  # noqa: E501
         with requests.Session() as s:
             if prevpage:
                 s.get(prevpage, headers=headers, verify=verify)
