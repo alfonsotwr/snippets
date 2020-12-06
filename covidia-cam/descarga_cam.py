@@ -22,14 +22,14 @@ from io import StringIO
 
 from descargabib import descarga
 
-expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)
+expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)  # noqa: E501
 
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
 expacum = re.compile(r'\n2 \n7 \n12 \n[\d \n]+')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
 
 
-URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:02d}{:02d}_cam_covid19.pdf'
+URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:02d}{:02d}_cam_covid19.pdf'  # noqa: E501
 FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
 
 
@@ -54,7 +54,8 @@ def descargacam():
             current += dt.timedelta(1)
             continue
 
-        fn = pdfdir + FN_TPL.format(current.year % 100, current.month, current.day)
+        fn = pdfdir + FN_TPL.format(current.year % 100, current.month,
+                                    current.day)
         url = URL_TPL.format(current.year % 100, current.month, current.day)
 
         if not pth.exists(fn):
@@ -77,6 +78,10 @@ def descargacam():
                 elif current == dt.date(2020, 12, 3):  # special cases
                     url = url.replace('201203_cam_covid19', '3.12.2020_2')
                     changed = True
+                elif current == dt.date(2020, 12, 6):  # special cases
+                    url = url.replace('201206_cam_covid19', '6.12.2020')
+                    changed = True
+
                 if changed:
                     descarga(url, fn, isbinary=True)
                     time.sleep(1)
