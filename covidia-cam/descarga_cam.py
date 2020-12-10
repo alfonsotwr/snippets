@@ -272,7 +272,7 @@ def descargacam():
                 recuperados = numbers[17]
             elif fmt == 4:
                 text2 = text.replace('(', ' ')
-                text2 = exppoint.sub('', text2).replace('.', '')
+                text2 = exppoint.sub('', text2).replace('.', ' ')
                 text2 = text2.replace('*', ' ')
                 text2 = ' '.join(text2.split()).lower()
 
@@ -296,7 +296,7 @@ def descargacam():
                 fallecidos, _ = getfield(text2, 'fallecidos hospitales', 'acumulado[)]')  # noqa: E501
 
                 domicilio_dia, _ = getfield(text2, 'atenci.n primaria', 'seguimiento en el d.a')  # noqa: E501
-                domicilio, _ = getfield(text2, 'atenci.n primaria', 'acumulados')
+                domicilio, _ = getfield(text2, 'atenci.n primaria', 'acumulados')  # noqa: E501
 
                 muertos_centros, _ = getfield(text2, 'mortuoria fallecidos', 'centros sociosanitarios')  # noqa: E501
                 muertos_hospitales, _ = getfield(text2, 'mortuoria fallecidos', 'hospitales')  # noqa: E501
