@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Requiere las bibliotecas Python: requests, pdfminer.six, pandas; Módulo: descargabib.py
+"""Requiere las bibliotecas Python: requests, pdfminer.six, pandas; Módulo: descargabib.py  # noqa: E501
 
 Informes de:
 
@@ -27,6 +27,8 @@ expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
 expacum = re.compile(r'\n2 \n7 \n12 \n[\d \n]+')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
+
+exppoint = re.compile(r'(?<=\d)\.(?=\d)')
 
 
 URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:02d}{:02d}_cam_covid19.pdf'  # noqa: E501
@@ -164,7 +166,9 @@ def descargacam():
             muertos = numbers[20]
         else:
             # print(text)
-            if date >= dt.datetime(2020, 5, 20):
+            if date < dt.datetime(2020, 5, 20):
+                fmt = 0
+            elif date < dt.datetime(2020, 12, 10):
                 assert len(numbers) == 18, 'Formato no contemplado'
                 if numbers[7] < 4500:
                     if numbers[10] > 250000:
@@ -174,7 +178,8 @@ def descargacam():
                 else:
                     fmt = 2
             else:
-                fmt = 0
+                assert len(numbers) == 18, 'Formato no contemplado'
+                fmt = 4
 
             # print([(ix, jx) for ix, jx in enumerate(numbers)])
             # print(fmt)
@@ -265,6 +270,42 @@ def descargacam():
 
                 altas_dia = numbers[16]
                 recuperados = numbers[17]
+            elif fmt == 4:
+                text2 = text.replace('(', ' ')
+                text2 = exppoint.sub('', text2).replace('.', '')
+                text2 = text2.replace('*', ' ')
+                text2 = ' '.join(text2.split()).lower()
+
+                # print(text2)
+
+                pcr, _ = getfield(text2, 'casos positivos', 'acumulad')
+                hospitalizados_sin_uci_dia, pos1 = getfield(text2, 'pacientes hospitalizados', 'ingresados en el d.a')  # noqa: E501
+                hospitalizados, pos2 = getfield(text2, 'pacientes hospitalizados', 'acumulad')  # noqa: E501
+                uci_dia, _ = getfield(text2, 'pacientes en uci', 'ingresados en el d.a')  # noqa: E501
+                uci, _ = getfield(text2, 'pacientes en uci', 'acumulad')
+
+                if hospitalizados <= uci:
+                    uci_dia, _ = getfield(text2[pos1:], '', 'ingresados en el d.a')  # noqa: E501
+                    uci, _ = getfield(text2[pos2:], '', 'acumulad')
+
+                if hospitalizados <= uci:
+                    hospitalizados, uci = uci, hospitalizados
+                    hospitalizados_sin_uci_dia, uci_dia = uci_dia, hospitalizados_sin_uci_dia  # noqa: E501
+
+                fallecidos_dia, _ = getfield(text2, 'fallecidos hospitales', 'en el d.a')  # noqa: E501
+                fallecidos, _ = getfield(text2, 'fallecidos hospitales', 'acumulado[)]')  # noqa: E501
+
+                domicilio_dia, _ = getfield(text2, 'atenci.n primaria', 'seguimiento en el d.a')  # noqa: E501
+                domicilio, _ = getfield(text2, 'atenci.n primaria', 'acumulados')
+
+                muertos_centros, _ = getfield(text2, 'mortuoria fallecidos', 'centros sociosanitarios')  # noqa: E501
+                muertos_hospitales, _ = getfield(text2, 'mortuoria fallecidos', 'hospitales')  # noqa: E501
+                muertos_domicilios, _ = getfield(text2, 'mortuoria fallecidos', 'domicilios')  # noqa: E501
+                muertos_otros, _ = getfield(text2, 'mortuoria fallecidos', 'otros lugares')  # noqa: E501
+                muertos, _ = getfield(text2, 'mortuoria fallecidos', 'total')
+
+                altas_dia, _ = getfield(text2, 'altas hospitalarias', 'en el d.a')  # noqa: E501
+                recuperados, _ = getfield(text2, 'altas hospitalarias', 'acumuladas')  # noqa: E501
             else:
                 assert False, 'fmt incorrecto'
 
@@ -353,6 +394,24 @@ def descargacam():
 
     print('ESTÁ ACTUALIZADO' if today == df.index[-1].date() else
           '******************* NO ESTÁ ACTUALIZADO')
+
+
+def getfield(text, title, name):
+    if title:
+        m = re.search(title, text)
+        assert m is not None, f'Título no encontrado: {title}'
+        last = m.end()
+    else:
+        last = 0
+
+    m = re.compile(r'(\d+)\s+' + name).search(text, last)
+    assert m is not None, f'Campo no encontrado: {title}/{name}'
+
+    value = int(m.group(1))
+
+    # print(f'{title}/{name}: {value}')
+
+    return value, m.end()
 
 
 # Extract PDF text using PDFMiner. Adapted from
