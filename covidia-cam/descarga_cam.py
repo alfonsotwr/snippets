@@ -25,7 +25,7 @@ from descargabib import descarga
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)  # noqa: E501
 
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
-expacum = re.compile(r'\n2 \n7 \n12 \n[\d \n]+')
+expacum = re.compile(r'\n(1|2) \n(5|6|7) \n(9|10|11|12) \n[\d \n]+')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
 
 exppoint = re.compile(r'(?<=\d)\.(?=\d)')
@@ -336,6 +336,30 @@ def descargacam():
     # return  # Para no crear serie PCR
 
     fn2 = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
+
+    sr = getconsol(fn2)
+    sr.name = 'PCR+'
+    sr.index.name = 'Fecha'
+    df2 = sr.to_frame()
+
+    if df.index[-1] != df2.index[-1] + dt.timedelta(1):
+        raise RuntimeError('Última fecha de las tablas no coincide')
+
+    # pd.set_option('display.max_rows', None)
+    # print(sr)
+    # print(sr.diff())
+    assert all(sr.diff().dropna() >= 0), 'La serie acumulada no es creciente'
+    assert all((sr.index[1:] - sr.index[:-1]).days > 0), 'Fechas no suben'
+
+    csvfn = datadir + 'madrid-pcr.csv'
+    print('Escribiendo', csvfn)
+    df2.to_csv(csvfn, line_terminator='\r\n')
+
+    print('ESTÁ ACTUALIZADO' if today == df.index[-1].date() else
+          '******************* NO ESTÁ ACTUALIZADO')
+
+
+def getconsol(fn2):
     fn3 = fn2.replace('_2.txt', '_3.txt')
     print(fn2)
     with open(fn2, encoding='utf-8') as fp:
@@ -374,26 +398,7 @@ def descargacam():
 
     assert len(accum) == len(dates), 'La serie acumulada no concuerda para _3'
 
-    sr = pd.Series(accum, index=dates).sort_index()
-    sr.name = 'PCR+'
-    sr.index.name = 'Fecha'
-    df2 = sr.to_frame()
-
-    if df.index[-1] != df2.index[-1] + dt.timedelta(1):
-        raise RuntimeError('Última fecha de las tablas no coincide')
-
-    # pd.set_option('display.max_rows', None)
-    # print(sr)
-    # print(sr.diff())
-    assert all(sr.diff().dropna() >= 0), 'La serie acumulada no es creciente'
-    assert all((sr.index[1:] - sr.index[:-1]).days > 0), 'Fechas no suben'
-
-    csvfn = datadir + 'madrid-pcr.csv'
-    print('Escribiendo', csvfn)
-    df2.to_csv(csvfn, line_terminator='\r\n')
-
-    print('ESTÁ ACTUALIZADO' if today == df.index[-1].date() else
-          '******************* NO ESTÁ ACTUALIZADO')
+    return pd.Series(accum, index=dates).sort_index()
 
 
 def getfield(text, title, name):
