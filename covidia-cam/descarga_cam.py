@@ -97,9 +97,12 @@ def descargacam():
     df = pd.DataFrame()
 
     for fn in sorted(glob(pdfdir + '20*_cam_covid19.pdf')):
+        datefn = getdatefn(fn)
+
         fn1 = fn.replace('.pdf', '_1.txt')
         fn2 = fn.replace('.pdf', '_2.txt')
         fn3 = fn.replace('.pdf', '_3.txt')
+        fn4 = fn.replace('.pdf', '_4.txt')
         if not pth.isfile(fn1):
             print('Creating:', fn1)
             page1 = pdf_to_text(fn, pagenum=0)
@@ -115,15 +118,14 @@ def descargacam():
             page3 = pdf_to_text(fn, pagenum=2)
             with open(fn3, 'w', encoding='utf-8') as fp:
                 fp.write(page3)
+        if not pth.isfile(fn4) and datefn >= dt.datetime(2020, 12, 22):
+            print('Creating:', fn4)
+            page4 = pdf_to_text(fn, pagenum=3)
+            with open(fn4, 'w', encoding='utf-8') as fp:
+                fp.write(page4)
 
     for fn in sorted(glob(pdfdir + '20*_cam_covid19_1.txt')):
-        print(fn)
-        base = pth.basename(fn)
-        year = 2000 + int(base[:2])
-        month = int(base[2:4])
-        day = int(base[4:6])
-
-        date = dt.datetime(year, month, day)
+        date = getdatefn(fn)
 
         # if date > dt.datetime(2020, 7, 13):
         #     break
@@ -360,7 +362,11 @@ def descargacam():
 
 
 def getconsol(fn2):
+    datefn = getdatefn(fn2)
+
     fn3 = fn2.replace('_2.txt', '_3.txt')
+    fn4 = fn2.replace('_2.txt', '_4.txt')
+
     print(fn2)
     with open(fn2, encoding='utf-8') as fp:
         text = fp.read()
@@ -395,10 +401,33 @@ def getconsol(fn2):
 
     accum2 = [int(x.group()) for x in expnumber2.finditer(text)]
     accum += sorted(accum2)
-
     assert len(accum) == len(dates), 'La serie acumulada no concuerda para _3'
 
+    if datefn >= dt.datetime(2020, 12, 22):
+        print(fn4)
+        with open(fn4, encoding='utf-8') as fp:
+            text = fp.read()
+
+        dates2 = []
+        for m in expfecha.finditer(text):
+            dates2.append(dt.datetime(int(m.group(3)), int(m.group(2)),
+                                      int(m.group(1))))
+        dates += sorted(dates2)
+
+        accum2 = [int(x.group()) for x in expnumber2.finditer(text)]
+        accum += sorted(accum2)
+        assert len(accum) == len(dates), 'La serie acumulada no concuerda para _4'  # noqa: E501
+
     return pd.Series(accum, index=dates).sort_index()
+
+
+def getdatefn(fn):
+    base = pth.basename(fn)
+    year = 2000 + int(base[:2])
+    month = int(base[2:4])
+    day = int(base[4:6])
+
+    return dt.datetime(year, month, day)
 
 
 def getfield(text, title, name):
