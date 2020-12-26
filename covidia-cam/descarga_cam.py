@@ -52,7 +52,8 @@ def descargacam():
                 current.weekday() in [5, 6]):
             current += dt.timedelta(1)
             continue
-        if current in [dt.date(2020, 10, 12)]:
+        if current in [dt.date(2020, 10, 12),
+                       dt.date(2020, 12, 25)]:
             current += dt.timedelta(1)
             continue
 
