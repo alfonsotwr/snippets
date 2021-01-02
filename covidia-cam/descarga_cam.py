@@ -53,7 +53,8 @@ def descargacam():
             current += dt.timedelta(1)
             continue
         if current in [dt.date(2020, 10, 12),
-                       dt.date(2020, 12, 25)]:
+                       dt.date(2020, 12, 25),
+                       dt.date(2021, 1, 1)]:
             current += dt.timedelta(1)
             continue
 
@@ -97,7 +98,7 @@ def descargacam():
     csvfn = datadir + 'madrid-series.csv'
     df = pd.DataFrame()
 
-    for fn in sorted(glob(pdfdir + '20*_cam_covid19.pdf')):
+    for fn in sorted(glob(pdfdir + '2*_cam_covid19.pdf')):
         datefn = getdatefn(fn)
 
         fn1 = fn.replace('.pdf', '_1.txt')
@@ -125,7 +126,7 @@ def descargacam():
             with open(fn4, 'w', encoding='utf-8') as fp:
                 fp.write(page4)
 
-    for fn in sorted(glob(pdfdir + '20*_cam_covid19_1.txt')):
+    for fn in sorted(glob(pdfdir + '2*_cam_covid19_1.txt')):
         date = getdatefn(fn)
 
         # if date > dt.datetime(2020, 7, 13):
@@ -338,7 +339,7 @@ def descargacam():
 
     # return  # Para no crear serie PCR
 
-    fn2 = sorted(glob(pdfdir + '20*_cam_covid19_2.txt'))[-1]
+    fn2 = sorted(glob(pdfdir + '2*_cam_covid19_2.txt'))[-1]
 
     sr = getconsol(fn2)
     sr.name = 'PCR+'
