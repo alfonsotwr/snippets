@@ -25,7 +25,7 @@ from descargabib import descarga
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)  # noqa: E501
 
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
-expacum = re.compile(r'\n(1|2) \n(5|6|7) \n(9|10|11|12) \n[\d \n]+')
+expacum = re.compile(r'\n(1|2) \n(5|6|7|8) \n(9|10|11|12|13) \n[\d \n]+')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
 
 exppoint = re.compile(r'(?<=\d)\.(?=\d)')
@@ -54,7 +54,8 @@ def descargacam():
             continue
         if current in [dt.date(2020, 10, 12),
                        dt.date(2020, 12, 25),
-                       dt.date(2021, 1, 1)]:
+                       dt.date(2021, 1, 1),
+                       dt.date(2021, 1, 6)]:
             current += dt.timedelta(1)
             continue
 
