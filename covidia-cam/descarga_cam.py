@@ -25,7 +25,7 @@ from descargabib import descarga
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)  # noqa: E501
 
 expfecha = re.compile(r'(\d\d)/(\d\d)/(\d\d\d\d)')
-expacum = re.compile(r'\n(1|2) \n(5|6|7|8) \n(9|10|11|12|13) \n[\d \n]+')
+expacum = re.compile(r'\n(1|2) \n(5|6|7|8) \n(9|10|11|12|13) \n[\d \n]+(/)?')
 expnumber2 = re.compile(r'\d\d\d\d\d+')
 
 exppoint = re.compile(r'(?<=\d)\.(?=\d)')
@@ -378,7 +378,10 @@ def getconsol(fn2):
 
     assert m, 'Debe ajustarse expacum con los primeros valores'
 
-    accum = [int(x) for x in m.group().split()]
+    accum = m.group().split()
+    if accum[-1].endswith('/'):  # Ha leído una fecha
+        accum = accum[:-1]
+    accum = [int(x) for x in accum]
 
     dates = []
     for m in expfecha.finditer(text):
