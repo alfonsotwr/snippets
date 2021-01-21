@@ -4,7 +4,7 @@
 
 Informes de:
 
-https://www.comunidad.madrid/servicios/salud/2019-nuevo-coronavirus#situacion-epidemiologica-actual
+https://www.comunidad.madrid/servicios/salud/coronavirus#datos-situacion-actual
 """
 
 import os.path as pth
