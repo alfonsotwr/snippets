@@ -128,6 +128,7 @@ def descargacam():
                 fp.write(page4)
 
     for fn in sorted(glob(pdfdir + '2*_cam_covid19_1.txt')):
+        print(fn)
         date = getdatefn(fn)
 
         # if date > dt.datetime(2020, 7, 13):
@@ -298,7 +299,10 @@ def descargacam():
                     hospitalizados_sin_uci_dia, uci_dia = uci_dia, hospitalizados_sin_uci_dia  # noqa: E501
 
                 fallecidos_dia, _ = getfield(text2, 'fallecidos hospitales', 'en el d.a')  # noqa: E501
-                fallecidos, _ = getfield(text2, 'fallecidos hospitales', 'acumulado[)]')  # noqa: E501
+                try:
+                    fallecidos, _ = getfield(text2, 'fallecidos hospitales', 'acumulado[)]')  # noqa: E501
+                except AssertionError:  # informe de 2021-01-24
+                    fallecidos, _ = getfield(text2, 'casos positivos', 'acumulado[)]')  # noqa: E501
 
                 domicilio_dia, _ = getfield(text2, 'atenci.n primaria', 'seguimiento en el d.a')  # noqa: E501
                 domicilio, _ = getfield(text2, 'atenci.n primaria', 'acumulados')  # noqa: E501
