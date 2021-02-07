@@ -382,10 +382,17 @@ def getconsol(fn2):
 
     assert m, 'Debe ajustarse expacum con los primeros valores'
 
-    accum = m.group().split()
-    if accum[-1].endswith('/'):  # Ha leído una fecha
-        accum = accum[:-1]
-    accum = [int(x) for x in accum]
+    saccum = m.group().split()
+    if saccum[-1].endswith('/'):  # Ha leído una fecha
+        saccum = saccum[:-1]
+
+    accum = []
+    for x in saccum:
+        x = int(x)
+        if len(accum) == 0 or x >= accum[-1]:
+            accum.append(x)
+        else:
+            break
 
     dates = []
     for m in expfecha.finditer(text):
