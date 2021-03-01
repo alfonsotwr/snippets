@@ -106,24 +106,27 @@ def descargacam():
         fn2 = fn.replace('.pdf', '_2.txt')
         fn3 = fn.replace('.pdf', '_3.txt')
         fn4 = fn.replace('.pdf', '_4.txt')
+        pagebase = 0
+        if datefn >= dt.datetime(2021, 3, 1):
+            pagebase += 1
         if not pth.isfile(fn1):
             print('Creating:', fn1)
-            page1 = pdf_to_text(fn, pagenum=0)
+            page1 = pdf_to_text(fn, pagenum=pagebase)
             with open(fn1, 'w', encoding='utf-8') as fp:
                 fp.write(page1)
         if not pth.isfile(fn2):
             print('Creating:', fn2)
-            page2 = pdf_to_text(fn, pagenum=1)
+            page2 = pdf_to_text(fn, pagenum=pagebase + 1)
             with open(fn2, 'w', encoding='utf-8') as fp:
                 fp.write(page2)
         if not pth.isfile(fn3):
             print('Creating:', fn3)
-            page3 = pdf_to_text(fn, pagenum=2)
+            page3 = pdf_to_text(fn, pagenum=pagebase + 2)
             with open(fn3, 'w', encoding='utf-8') as fp:
                 fp.write(page3)
         if not pth.isfile(fn4) and datefn >= dt.datetime(2020, 12, 22):
             print('Creating:', fn4)
-            page4 = pdf_to_text(fn, pagenum=3)
+            page4 = pdf_to_text(fn, pagenum=pagebase + 3)
             with open(fn4, 'w', encoding='utf-8') as fp:
                 fp.write(page4)
 
