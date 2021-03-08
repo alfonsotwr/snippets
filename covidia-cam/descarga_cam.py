@@ -89,6 +89,9 @@ def descargacam():
                 elif current == dt.date(2020, 12, 8):  # special cases
                     url = url.replace('/doc/sanidad/', '/aud/empleo/')
                     changed = True
+                elif current == dt.date(2021, 3, 8):  # special cases
+                    url = url.replace('/210308', '/2103008')
+                    changed = True
 
                 if changed:
                     descarga(url, fn, isbinary=True)
