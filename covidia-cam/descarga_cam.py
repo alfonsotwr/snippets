@@ -115,6 +115,7 @@ def descargacam():
         fn2 = fn.replace('.pdf', '_2.txt')
         fn3 = fn.replace('.pdf', '_3.txt')
         fn4 = fn.replace('.pdf', '_4.txt')
+        fn5 = fn.replace('.pdf', '_5.txt')
         pagebase = 0
         if datefn >= dt.datetime(2021, 3, 1):
             pagebase += 1
@@ -138,6 +139,11 @@ def descargacam():
             page4 = pdf_to_text(fn, pagenum=pagebase + 3)
             with open(fn4, 'w', encoding='utf-8') as fp:
                 fp.write(page4)
+        if not pth.isfile(fn5) and datefn >= dt.datetime(2021, 4, 15):
+            print('Creating:', fn5)
+            page5 = pdf_to_text(fn, pagenum=pagebase + 4)
+            with open(fn5, 'w', encoding='utf-8') as fp:
+                fp.write(page5)
 
     for fn in sorted(glob(pdfdir + '2*_cam_covid19_1.txt')):
         print(fn)
@@ -385,6 +391,7 @@ def getconsol(fn2):
 
     fn3 = fn2.replace('_2.txt', '_3.txt')
     fn4 = fn2.replace('_2.txt', '_4.txt')
+    fn5 = fn2.replace('_2.txt', '_5.txt')
 
     print(fn2)
     with open(fn2, encoding='utf-8') as fp:
@@ -446,6 +453,21 @@ def getconsol(fn2):
         accum2 = [int(x.group()) for x in expnumber2.finditer(text)]
         accum += sorted(accum2)
         assert len(accum) == len(dates), 'La serie acumulada no concuerda para _4'  # noqa: E501
+
+    if datefn >= dt.datetime(2021, 4, 15):
+        print(fn5)
+        with open(fn5, encoding='utf-8') as fp:
+            text = fp.read()
+
+        dates2 = []
+        for m in expfecha.finditer(text):
+            dates2.append(dt.datetime(int(m.group(3)), int(m.group(2)),
+                                      int(m.group(1))))
+        dates += sorted(dates2)
+
+        accum2 = [int(x.group()) for x in expnumber2.finditer(text)]
+        accum += sorted(accum2)
+        assert len(accum) == len(dates), 'La serie acumulada no concuerda para _5'  # noqa: E501
 
     return pd.Series(accum, index=dates).sort_index()
 
