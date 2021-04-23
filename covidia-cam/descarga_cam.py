@@ -68,34 +68,37 @@ def descargacam():
             time.sleep(1)
             if not ret:
                 changed = False
-                if current == dt.date(2020, 8, 3):  # special cases
+                if current == dt.date(2020, 8, 3):  # casos especiales
                     url = url.replace('03_', '03')
                     changed = True
-                elif current == dt.date(2020, 8, 14):  # special cases
+                elif current == dt.date(2020, 8, 14):  # casos especiales
                     url = url.replace('/20', '/2020')
                     changed = True
-                elif current == dt.date(2020, 9, 2):  # special cases
+                elif current == dt.date(2020, 9, 2):  # casos especiales
                     url = url.replace('/doc/sanidad', '')
                     changed = True
-                elif current == dt.date(2020, 11, 4):  # special cases
+                elif current == dt.date(2020, 11, 4):  # casos especiales
                     url = url.replace('/doc/', '/aud/')
                     changed = True
-                elif current == dt.date(2020, 12, 3):  # special cases
+                elif current == dt.date(2020, 12, 3):  # casos especiales
                     url = url.replace('201203_cam_covid19', '3.12.2020_2')
                     changed = True
-                elif current == dt.date(2020, 12, 6):  # special cases
+                elif current == dt.date(2020, 12, 6):  # casos especiales
                     url = url.replace('201206_cam_covid19', '6.12.2020')
                     changed = True
-                elif current == dt.date(2020, 12, 8):  # special cases
+                elif current == dt.date(2020, 12, 8):  # casos especiales
                     url = url.replace('/doc/sanidad/', '/aud/empleo/')
                     changed = True
-                elif current == dt.date(2021, 3, 8):  # special cases
+                elif current == dt.date(2021, 3, 8):  # casos especiales
                     url = url.replace('/210308', '/2103008')
                     changed = True
-                elif current == dt.date(2021, 3, 24):  # special cases
+                elif current == dt.date(2021, 3, 24):  # casos especiales
                     url = url.replace('/doc/sanidad/', '/doc/sanidad/rrhh/')
                     changed = True
-                elif current == dt.date(2021, 4, 1):  # special cases
+                elif current == dt.date(2021, 4, 1):  # casos especiales
+                    url = url.replace('/doc/', '/aud/')
+                    changed = True
+                elif current == dt.date(2021, 4, 22):  # casos especiales
                     url = url.replace('/doc/', '/aud/')
                     changed = True
 
@@ -120,27 +123,27 @@ def descargacam():
         if datefn >= dt.datetime(2021, 3, 1):
             pagebase += 1
         if not pth.isfile(fn1):
-            print('Creating:', fn1)
+            print('Guardando:', fn1)
             page1 = pdf_to_text(fn, pagenum=pagebase)
             with open(fn1, 'w', encoding='utf-8') as fp:
                 fp.write(page1)
         if not pth.isfile(fn2):
-            print('Creating:', fn2)
+            print('Guardando:', fn2)
             page2 = pdf_to_text(fn, pagenum=pagebase + 1)
             with open(fn2, 'w', encoding='utf-8') as fp:
                 fp.write(page2)
         if not pth.isfile(fn3):
-            print('Creating:', fn3)
+            print('Guardando:', fn3)
             page3 = pdf_to_text(fn, pagenum=pagebase + 2)
             with open(fn3, 'w', encoding='utf-8') as fp:
                 fp.write(page3)
         if not pth.isfile(fn4) and datefn >= dt.datetime(2020, 12, 22):
-            print('Creating:', fn4)
+            print('Guardando:', fn4)
             page4 = pdf_to_text(fn, pagenum=pagebase + 3)
             with open(fn4, 'w', encoding='utf-8') as fp:
                 fp.write(page4)
         if not pth.isfile(fn5) and datefn >= dt.datetime(2021, 4, 15):
-            print('Creating:', fn5)
+            print('Guardando:', fn5)
             page5 = pdf_to_text(fn, pagenum=pagebase + 4)
             with open(fn5, 'w', encoding='utf-8') as fp:
                 fp.write(page5)
@@ -322,7 +325,12 @@ def descargacam():
                 except AssertionError:  # informe de 2021-01-24
                     fallecidos, _ = getfield(text2, 'casos positivos', 'acumulado[)]')  # noqa: E501
 
-                domicilio_dia, _ = getfield(text2, 'atenci.n primaria', 'seguimiento en el d.a')  # noqa: E501
+                try:
+                    domicilio_dia, _ = getfield(text2, 'atenci.n primaria', 'seguimiento en el d.a')  # noqa: E501
+                except AssertionError:  # informe de 2021-04-23
+                    nums = getnumbers(text2, 'atenci.n primaria')
+                    assert len(nums) >= 1, 'No numbers para atenci.n primaria'
+                    domicilio_dia = nums[0]
                 domicilio, _ = getfield(text2, 'atenci.n primaria', 'acumulados')  # noqa: E501
 
                 muertos_centros, _ = getfield(text2, 'mortuoria fallecidos', 'centros sociosanitarios')  # noqa: E501
@@ -497,6 +505,23 @@ def getfield(text, title, name):
     # print(f'{title}/{name}: {value}')
 
     return value, m.end()
+
+
+def getnumbers(text, title):
+    m = re.search(title, text)
+    assert m is not None, f'Título no encontrado: {title}'
+    last = m.end()
+
+    numbers = []
+    for x in text[last:].split():
+        if ')' in x:
+            break
+        try:
+            v = int(x.strip())
+            numbers.append(v)
+        except:
+            continue
+    return numbers
 
 
 # Extract PDF text using PDFMiner. Adapted from
