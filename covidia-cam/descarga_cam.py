@@ -518,9 +518,11 @@ def getnumbers(text, title):
             break
         try:
             v = int(x.strip())
-            numbers.append(v)
-        except:
+        except ValueError:
             continue
+        else:
+            numbers.append(v)
+
     return numbers
 
 
