@@ -23,6 +23,23 @@ encuentre el fichero correcto, en el apartado casos especiales, como:
                     url = url.replace('/doc/', '/aud/')
                     changed = True
 
++ Normalmente los informe pdf de la CAM se publican algo después de las 17:00
+a diario pero los fines de semana y festivos se pueden retrasar más. Si no
+cambian el formato del nombre, los ficheros se pueden descargar antes incluso
+antes de que publiquen el enlace.
+
++ Cuando por festivo no se publica un informe, conviene indicarlo en el script
+`descarga_cam.py` en el apartado _Días sin datos_, donde hay que añadir una
+nueva fecha:
+
+        # Días sin informe
+        if current in [dt.date(2020, 10, 12),
+                       dt.date(2020, 12, 25),
+                       dt.date(2021, 1, 1),
+                       dt.date(2021, 1, 6)]:
+            current += dt.timedelta(1)
+            continue
+
 + La expresión regular `expacum` de `descarga_cam.py` debe coincidir con los
 casos acumulados de los tres primeros días de la serie consolidada.
 Afortunadamente hace ya mucho tiempo que no hace falta cambiarla:
