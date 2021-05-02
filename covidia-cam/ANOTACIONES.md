@@ -8,6 +8,9 @@ fichero csv creados en `data/`.
 + El script `comprueba-cam.py` sirve para dibujar todas las series guardadas.
 Necesita de las bibliotecas pandas y matplotlib.
 
++ Para encontrar errores al generar los ficheros de datos ayuda revisar el
+_diff_ del _commit_ en github.
+
 + Los ficheros pdf se descargan de
 <https://www.comunidad.madrid/servicios/salud/coronavirus#datos-situacion-actual>.
 Si falla la descarga porque han puesto un nombre de fichero distinto al usado
