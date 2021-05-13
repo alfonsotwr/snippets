@@ -350,6 +350,10 @@ def descargacam():
 
                 altas_dia, _ = getfield(text2, 'altas hospitalarias', 'en el d.a')  # noqa: E501
                 recuperados, _ = getfield(text2, 'altas hospitalarias', 'acumuladas')  # noqa: E501
+
+                if altas_dia > domicilio_dia:
+                    altas_dia, domicilio_dia = domicilio_dia, altas_dia
+
             else:
                 assert False, 'fmt incorrecto'
 
