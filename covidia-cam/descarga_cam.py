@@ -20,6 +20,9 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from io import StringIO
 
+from pathlib import Path
+Path("my/directory").mkdir(parents=True, exist_ok=True)
+
 from descargabib import descarga
 
 expnumber = re.compile(r'^ *(\d+(?: ?\. ?\d+)*)(?:[^\d/]|\s|\(|$|\.[^\d/]|\.\s|\.$)', re.M)  # noqa: E501
@@ -35,17 +38,20 @@ URL_TPL = 'https://www.comunidad.madrid/sites/default/files/doc/sanidad/{:02d}{:
 FN_TPL = '{:02d}{:02d}{:02d}_cam_covid19.pdf'
 
 
+
 def descargacam():
     today = dt.date.today()
 
     current = dt.date(2020, 4, 22)
 
-    pdfdir = 'data/cam/'
-    if pth.isdir(pdfdir):
-        datadir = 'data/'
-    else:
-        pdfdir = ''
-        datadir = ''
+    pdfdir = 'data/'
+    datadir = ''
+
+    try:
+       Path(pdfdir).mkdir(parents=True, exist_ok=True)
+    except:
+	print(f"No puedo crear directorio para PDFs {pdfdir}")
+
 
     while current <= today:
         # Durante un periodo no se publicó el informe en fines de semana
@@ -110,6 +116,9 @@ def descargacam():
                 elif current == dt.date(2021, 4, 28):  # casos especiales
                     url = url.replace('/doc/', '/aud/')
                     changed = True
+                elif current == dt.date(2021, 5, 10):  # casos especiales
+                    url = url.replace('cam_covid19', 'cam_covid')
+                    changed = True    
 
                 if changed:
                     descarga(url, fn, isbinary=True)
