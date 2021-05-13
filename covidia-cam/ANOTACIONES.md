@@ -1,9 +1,7 @@
 # ANOTACIONES #
 
-+ Los ficheros `pdf` descargados y los ficheros csv creado se guardan en el
-mismo directorio donde está el script `descarga_cam.py`, a no ser que exista el
-directorio, `data/pdf/`, en cuyo caso los pdf se guardan en `data/pdf/` y los
-fichero csv creados en `data/`.
++ Los ficheros `pdf` descargados se guardan en el subdirectorio `data/` y los csv 
+se generan en el mismo directorio donde está el script `descarga_cam.py`.
 
 + El script `comprueba-cam.py` sirve para dibujar todas las series guardadas.
 Necesita de las bibliotecas pandas y matplotlib.
