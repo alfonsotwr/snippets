@@ -21,7 +21,6 @@ from pdfminer.layout import LAParams
 from io import StringIO
 
 from pathlib import Path
-Path("my/directory").mkdir(parents=True, exist_ok=True)
 
 from descargabib import descarga
 
@@ -64,7 +63,8 @@ def descargacam():
         if current in [dt.date(2020, 10, 12),
                        dt.date(2020, 12, 25),
                        dt.date(2021, 1, 1),
-                       dt.date(2021, 1, 6)]:
+                       dt.date(2021, 1, 6),
+                       dt.date(2021, 5, 8)]:
             current += dt.timedelta(1)
             continue
 
@@ -150,6 +150,7 @@ def descargacam():
             page2 = pdf_to_text(fn, pagenum=pagebase + 1)
             with open(fn2, 'w', encoding='utf-8') as fp:
                 fp.write(page2)
+
         if not pth.isfile(fn3):
             print('Guardando:', fn3)
             page3 = pdf_to_text(fn, pagenum=pagebase + 2)
