@@ -6,7 +6,7 @@ __pycache__/
 #########
 # PROPIOS
 *.txt
-data/*.csv
+covidia-cam/data/*.csv
 
 
 # C extensions
