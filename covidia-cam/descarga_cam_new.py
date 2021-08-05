@@ -8,6 +8,8 @@ https://www.comunidad.madrid/servicios/salud/coronavirus#datos-situacion-actual
 """
 
 from os import path as os_pth, chdir as os_chdir
+from shutil import copy as shutil_copy
+
 import datetime as dt
 import time
 from glob import glob
@@ -17,23 +19,18 @@ import pandas as pd
 from os import  chdir as os_chdir, path as os_path
 from glob import glob
 from  numpy import r_ as np_r
-from  datetime import datetime as  DT_datetime
 import pandas as pd
 import fitz
 from  sys import argv as sys_argv
 
-#from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-#from pdfminer.pdfpage import PDFPage
-#from pdfminer.converter import TextConverter
-#from pdfminer.layout import LAParams
 from io import StringIO
 
 from pathlib import Path
 
 from descargabib import descarga
 
+
 os_chdir(str(Path(__file__).parent))
-#os_chdir(os_path.dirname(os_path.abspath(sys_argv[1])))
 
 pdfdir  = 'data/'
 datadir = ''
@@ -60,7 +57,7 @@ def descargacam():
     try:
        Path(pdfdir).mkdir(parents=True, exist_ok=True)
     except:
-       print(f"No puedo crear directorio para PDFs {pdfdir}")
+        print(f"ERROR: No puedo crear directorio para PDFs {pdfdir}")
 
 
     while current <= today:
@@ -82,60 +79,28 @@ def descargacam():
         fn = pdfdir + FN_TPL.format(current.year % 100, current.month, current.day) 
         url = URL_TPL.format(current.year % 100, current.month, current.day)
 
+        paths_posibles=[('covid19','covid-19'), ('doc','aud'),
+                        ('doc/sanidad', 'aud/empleo'),
+                        ('doc/sanidad', 'doc/sanidad/rrhh'),
+                        ('cam_covid19', 'cam_covid'),
+                        ('/doc/sanidad/', '/aud/empleo/')]
+
+        ret = False
+
         if not os_pth.exists(fn):
             ret = descarga(url, fn, isbinary=True)
             time.sleep(1)
-            if not ret:
-                changed = False
-                if current == dt.date(2020, 8, 3):  # casos especiales
-                    url = url.replace('03_', '03')
-                    changed = True
-                elif current == dt.date(2020, 8, 14):  # casos especiales
-                    url = url.replace('/20', '/2020')
-                    changed = True
-                elif current == dt.date(2020, 9, 2):  # casos especiales
-                    url = url.replace('/doc/sanidad', '')
-                    changed = True
-                elif current == dt.date(2020, 11, 4):  # casos especiales
-                    url = url.replace('/doc/', '/aud/')
-                    changed = True
-                elif current == dt.date(2020, 12, 3):  # casos especiales
-                    url = url.replace('201203_cam_covid19', '3.12.2020_2')
-                    changed = True
-                elif current == dt.date(2020, 12, 6):  # casos especiales
-                    url = url.replace('201206_cam_covid19', '6.12.2020')
-                    changed = True
-                elif current == dt.date(2020, 12, 8):  # casos especiales
-                    url = url.replace('/doc/sanidad/', '/aud/empleo/')
-                    changed = True
-                elif current == dt.date(2021, 3, 8):  # casos especiales
-                    url = url.replace('/210308', '/2103008')
-                    changed = True
-                elif current == dt.date(2021, 3, 24):  # casos especiales
-                    url = url.replace('/doc/sanidad/', '/doc/sanidad/rrhh/')
-                    changed = True
-                elif current == dt.date(2021, 4, 1):  # casos especiales
-                    url = url.replace('/doc/', '/aud/')
-                    changed = True
-                elif current == dt.date(2021, 4, 22):  # casos especiales
-                    url = url.replace('/doc/', '/aud/')
-                    changed = True
-                elif current == dt.date(2021, 4, 27):  # casos especiales
-                    url = url.replace('.pdf', '.pdf.pdf')
-                    changed = True
-                elif current == dt.date(2021, 4, 28):  # casos especiales
-                    url = url.replace('/doc/', '/aud/')
-                    changed = True
-                elif current == dt.date(2021, 5, 10):  # casos especiales
-                    url = url.replace('cam_covid19', 'cam_covid')
-                    changed = True
-                elif current == dt.date(2021, 5, 19):  # casos especiales
-                    url = url.replace('/doc/', '/aud/')
-                    changed = True    
 
-                if changed:
-                    descarga(url, fn, isbinary=True)
+            while not ret:
+                for caso in paths_posibles:
+                    url= url.replace(caso[0], caso[1] )
+                    ret = descarga(url, fn, isbinary=True)
                     time.sleep(1)
+                    if ret: break
+
+
+        if ret:
+            print(f"descargado: {fn}")
 
         current += dt.timedelta(1)
 
@@ -166,7 +131,7 @@ def tabla_PCR_actual(pdf ):
 
     df_limpio = df_temp.loc[(df_temp['Fecha_Notif'].str.len()== 10) & ~df_temp['PCR+'].isnull()] #
     
-    df_limpio.insert(loc=0, column='Fecha',                      value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str')) # noqa: E501
+    df_limpio.insert(loc=0, column='Fecha', value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str'))
     
     df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])#
 
@@ -175,24 +140,39 @@ def tabla_PCR_actual(pdf ):
     df_limpio.to_csv('madrid-pcr.csv', index=False, encoding='utf-8' ) 
 
 
-def datos_resumen(pdf):
+def datos_resumen(fecha):
     """
-    Extrae los datos de la página 2 del PDF 
+    Extrae los datos resumen de la página 2 del PDF 
     """
 
-    doc=fitz.open(pdf)
+    pdf=f"{pdfdir}{dt.datetime.strftime(fecha,'%y%m%d')}_cam_covid19.pdf"
+
+    try :
+        doc=fitz.open(pdf)
+
+    except :
+        return
+
+    print(pdf)
 
     fecha_str=f"20{pdf[-22:-20]}-{pdf[-20:-18]}-{pdf[-18:-16]}"
 
     df_temp = pd.DataFrame.from_records(  doc.get_page_text(pno=1, option='blocks'))
 
-    #pd.to_numeric(df.loc[df[6]==0, 4].replace('24h','', regex=True).
-    #              replace('\n','', regex=True).str.replace('.','', regex=False).str.replace(r'[A-Za-z]', '', regex=True).str.replace(' ','').str.replace(r'(','', regex=True).str.replace(r')','',regex=True), errors='coerce', downcast='signed').dropna().astype(int).tolist()
-    df_temp = df_temp.loc[df_temp[6]==0, 4].replace('24h','', regex=True)  # Quitamos '24h'
-    df_temp = df_temp.replace('\n','', regex=True).str.replace('.','', regex=False) # Quitamos saltos de línea y los puntos. Todos los números son enteros.
-    df_temp = df_temp.replace(r'[A-Za-z]', '', regex=True).str.replace(' ','') # Quitamos letras y espacios en blanco.
-    df_temp = df_temp.str.replace(r'(','', regex=True).str.replace(r')','',regex=True) # Quitamos los paréntesis apertura y cierre.
-    df_temp = pd.to_numeric(df_temp, errors='coerce', downcast='signed').dropna().astype(int)  # Nos quedamos con los enteros
+    # Quitamos '24h'
+    df_temp = df_temp.loc[df_temp[6]==0, 4].replace('24h','', regex=True)  
+    
+    # Quitamos saltos de línea y los puntos. Todos los números son enteros.
+    df_temp = df_temp.replace('\n','', regex=True).str.replace('.','', regex=False) 
+    
+    # Quitamos letras y espacios en blanco.
+    df_temp = df_temp.replace(r'[A-Za-z]', '', regex=True).str.replace(' ','') 
+    
+    # Quitamos los paréntesis apertura y cierre.
+    df_temp = df_temp.str.replace(r'(','', regex=True).str.replace(r')','',regex=True) 
+    
+    # Nos quedamos con los enteros
+    df_temp = pd.to_numeric(df_temp, errors='coerce', downcast='signed').dropna().astype(int)
 
     lista_valores = df_temp.tolist()
 
@@ -231,10 +211,47 @@ if __name__ == '__main__':
     # Después de descargar los ficheros.
     # Ejecución para crear el fichero de PCRs, 
 
+    
     ultimo_doc=max( glob(f"{pdfdir}*.pdf"))
-    
-    
 
+    ultimo_doc_dt=dt.datetime.strptime(ultimo_doc[5:11],"%y%m%d").date()
+
+    # El fichero madrid-pcr.csv se crea con los datos consolidados del último pdf publicado
     tabla_PCR_actual(ultimo_doc)
 
-    datos_resumen(ultimo_doc)
+    # El fichero madrid-series.csv se crea con los datos resumen publicados cada día.
+    # Leemos el fichero madrid-series.csv y le añadimos los datos de hoy,
+    # ó de todos los días descargados desde la última actualización.
+
+    fecha_hoy = dt.date.today()
+
+    try :
+        df_madrid_series=pd.read_csv('madrid-series.csv')
+        fecha_actual=dt.datetime.strptime( df_madrid_series.Fecha.max(), '%Y-%m-%d').date()
+
+    except :
+        print("no existe el fichero madrid-series.csv.")
+        print("Lo creamos a partir del fichero madrid-series-2021-04-30.csv")
+        print("y añade los datos de los pdf posteriores al 2021-04-30")
+        
+        try :
+            shutil_copy("madrid-series-2021-04-30.csv", "madrid-series.csv")
+        
+        except :    
+            print(f"Error para copiar madrid-series-2021-04-30.csv ==> madrid-series.csv")
+
+        fecha_actual=dt.date(2021, 4, 30 )
+        
+
+    print(fecha_actual)
+ 
+
+    while fecha_actual < fecha_hoy:
+        fecha_actual +=dt.timedelta(days=1)
+        datos_resumen(fecha_actual)
+    
+
+    
+
+
+    
