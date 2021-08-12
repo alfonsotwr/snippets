@@ -133,7 +133,7 @@ def tabla_PCR_actual(pdf ):
     
     df_limpio.insert(loc=0, column='Fecha', value=pd.to_datetime(df_limpio['Fecha_Notif'], dayfirst=True).astype('str'))
     
-    df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])#
+    df_limpio = df_limpio.drop(columns=['Fecha_Notif','diario'])# drop colums no usadas
 
     df_limpio=df_limpio.sort_values(by='Fecha', ascending=True) # 
 
